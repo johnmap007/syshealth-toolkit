@@ -53,6 +53,7 @@ MEM_PCT=$(free | awk '/Mem:/ {printf "%.0f", $3/$2*100}')
 ls
 # often average over time or use /proc/stat directly.
 CPU_PCT=$(top -bn1 | grep '^%Cpu' | awk '{print 100 - $8}' | cut -d. -f1)
+
 # --- Health checks with conditionals and color-coded output ---
 print_status "CHECK" "Running system health analysis..."
 HEALTH_STATUS=0 # 0 = healthy (no alerts). Will be set to 1 if any check fails.
@@ -63,6 +64,21 @@ if (( DISK_PCT > DISK_THRESHOLD )); then
 else
 	print_status "OK" "Disk usage on / is ${DISK_PCT}%"
 fi
+# --- Loop over multiple mount points (more realistic monitoring) ---
+for mount in / /home /var; do
+	if mountpoint -q "$mount" 2>/dev/null || [ "$mount" = "/" ]; then
+		PCT=$(df "$mount" | tail -1 | awk '{gsub("%",""); print $5}')
+		if (( PCT > DISK_THRESHOLD )); then
+			print_status "ALERT" "Disk usage on $mount is ${PCT}% (threshold ${DISK_THRESHOLD}%)"
+			HEALTH_STATUS=1
+		else
+		print_status "OK" "Disk usage on $mount is ${PCT}%"
+		fi
+	else
+		print_status "OK" "Mount point $mount does not exist or is not a mountpoint on this system"
+	fi
+done
+
 # Memory check
 if (( MEM_PCT > MEM_THRESHOLD )); then
 	print_status "ALERT" "Memory usage is ${MEM_PCT}% (threshold ${MEM_THRESHOLD}%)"
