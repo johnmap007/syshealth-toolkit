@@ -14,7 +14,8 @@ DISK_THRESHOLD=85
 print_status() {
 	local status="$1"
 	local message="$2"
-	if [ "$status" = "OK" ]; then
+	if [ "$status" = "OK" ]; 
+	then
 		echo -e "\e[32m OK: $message\e[0m"
 		else
 		echo -e "\e[31m ALERT: $message\e[0m"
