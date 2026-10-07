@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ===============================================
 # syshealth.sh - System Health & Log Analysis Toolkit
-# Lab 1 - Data Collector
+# Lab 3 - Refactoring into Functions
 # Author: Matthew Schell
 # Date: $(date +%Y-%m-%d)
 # ===============================================
@@ -20,6 +20,15 @@ print_status() {
 		echo -e "\e[31m ALERT: $message\e[0m"
 	fi
 }
+
+main() {
+	# This will be the ONLY code that runs at the top level
+	parse_arguments "$@"
+	run_health_checks
+	generate_report
+}
+
+main
 
 # --- Variables and quoting demonstration ---
 HOSTNAME=$(hostname)
@@ -96,6 +105,7 @@ fi
 
 # --- Output handling ---
 OUTPUT_FILE="${1:-}" # if $1 is given, use it; else print to screen
+
 print_report() {
 	printf "========================================\n"
 	printf "System Health Report - %s\n" "$CURRENT_DATE"
@@ -104,14 +114,16 @@ print_report() {
 	printf "Disk / : %s\n" "$DISK_USAGE"
 	printf "Memory used : %s\n" "$MEMORY_USAGE"
 	printf "Total processes : %s\n" "$PROCESS_COUNT"
+	printf "Health status : %s\n" "$([ "$HEALTH_STATUS" -eq 0 ] && echo "HEALTHY" || echo "UNHEALTHY - see alerts above")"
 	printf "========================================\n"
 }
+
 if [ -n "$OUTPUT_FILE" ]; then
 	print_report > "$OUTPUT_FILE"
-	echo "Report written to $OUTPUT_FILE"
+	echo "Report written to $OUTPUT_FILE (alerts were printed to terminal)"
 else
 	print_report
 fi
 
-exit 0
-
+# Exit with 0 (healthy) or 1 (alerts triggered). This enables scripting / cron usage.
+exit "${HEALTH_STATUS:-0}"

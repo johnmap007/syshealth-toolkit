@@ -1,0 +1,10 @@
+* 0d1fa54 (HEAD -> main, origin/main, origin/HEAD) Add for-loop over multiple mount points and update exit code handling
+* cebf482 Add parsing and conditional checks for disk, memory, and CPU
+* 5447f81 Implement print_status function with color-coded output
+* 9106288 Add threshold variables for CPU, MEM, and DISK
+* 0973e0e forgot to include the report
+* ea0a082 Add positional argument handling and report output
+* bd0f3a0 Implement command substitution for system metrics
+* 31eb254 Demonstrate quoting rules with explanatory comment
+* f2ae612 Add shebang and make syshealth.sh executable
+* 71429f8 Initial commit: project skeleton and README

@@ -1,0 +1,9 @@
+========================================
+System Health Report - 2026-09-18 10:46:42
+Hostname : DESKTOP-N9QRUPI
+Uptime : up 22 minutes
+Disk / : /dev/sdd       1007G  1.9G  954G   1% /
+Memory used : 658Mi/15Gi
+Total processes : 36
+Health status : UNHEALTHY - see alerts above
+========================================
